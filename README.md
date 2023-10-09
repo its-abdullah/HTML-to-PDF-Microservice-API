@@ -29,7 +29,7 @@ A Microservice REST API that uses MustacheJs for processing Html template and ge
 #### As File
 
 ```http
-  POST /
+  POST /AsFile/
 ```
 Enctype: `multipart/form-data` , and add the following:
 | Part Type | Required | Type     | Description                |
