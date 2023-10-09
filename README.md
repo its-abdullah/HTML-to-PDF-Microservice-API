@@ -6,12 +6,12 @@ A Microservice REST API that uses MustacheJs for processing Html template and ge
 
 
 ## Tech Stack
-* [ExpressJs](https://github.com/expressjs/expressjs.com)
-* [Multer](https://github.com/expressjs/multer)
-* [MustacheJs](https://github.com/janl/mustache.js)
-* [Puppeteer](https://github.com/puppeteer/puppeteer/)
-* [chromium](https://www.chromium.org) installed only when using Docker. Will be used as a browser instance for Puppeteer.
-* [SuperTest](https://github.com/ladjs/supertest)
+* [ExpressJs](https://github.com/expressjs/expressjs.com) NodeJS Web Framework.
+* [Multer](https://github.com/expressjs/multer) NodeJS middleware for handling `multipart/form-data`.
+* [MustacheJs](https://github.com/janl/mustache.js) Templating HTML.
+* [Puppeteer](https://github.com/puppeteer/puppeteer/) Generating PDF from HTML.
+* [chromium](https://www.chromium.org) To make a Chromium instance for Puppeteer only when Docker-ed.
+* [SuperTest](https://github.com/ladjs/supertest) For Unit-Test.
 
 
 ## Deployment
@@ -69,7 +69,7 @@ View:
 }
 ```
 
-#### With custom font
+#### With a custom font
 custom font file has to be converted to Base64 and added to the html template.
 
 Html:
