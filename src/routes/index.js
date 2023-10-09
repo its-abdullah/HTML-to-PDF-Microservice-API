@@ -1,9 +1,80 @@
 const express = require('express');
+const multer = require('multer');
+
+const { isHtml, isJson } = require('../services/helperService');
+const { Html2Pdf } = require('../services/puppeteerService');
+const { renderMustache } = require('../services/mustacheService');
 
 const router = express.Router();
+const upload = multer({ dest: 'uploads/' });
 
-router.get('/', (req, res) => {
-  res.send({ message: 'Hello world' });
+router.post('/AsFile/', upload.single('html'), async (req, res) => {
+  let { html } = req.body;
+
+  if (html === undefined)
+    return res.status(400).send({
+      message: 'HTML is required.'
+    });
+
+  if (!isHtml(html))
+    return res.status(400).send({
+      message: 'Not a valid HTML.'
+    });
+
+  const { view } = req.body;
+  let { fileName } = req.body;
+
+  if (fileName === undefined)
+    fileName = 'document.pdf';
+
+  if (view !== undefined) {
+    if (!isJson(view))
+      return res.status(400).send({
+        message: 'Not a valid Json View.'
+      });
+
+      html = renderMustache(html, view);
+  }
+
+  res.writeHead(200, {
+    'Content-Type': 'application/pdf',
+    'Content-Disposition': `attachment; filename="${fileName}"`
+  });
+
+  const download = Buffer.from(await Html2Pdf(html), 'base64');
+
+  res.end(download);
+
+  return undefined;
+});
+
+router.post('/AsBase64/', upload.single('html'), async (req, res) => {
+  let { html } = req.body;
+
+  if (html === undefined)
+    return res.status(400).send({
+      message: 'HTML is required.'
+    });
+
+  if (!isHtml(html))
+    return res.status(400).send({
+      message: 'Not a valid HTML.'
+    });
+
+  const { view } = req.body;
+
+  if (view !== undefined) {
+    if (!isJson(view))
+      return res.status(400).send({
+        message: 'Not a valid Json View.'
+      });
+
+      html = renderMustache(html, view);
+  }
+
+  res.json({ base64: (await Html2Pdf(html)).toString('base64') });
+
+  return undefined;
 });
 
 module.exports = router;
