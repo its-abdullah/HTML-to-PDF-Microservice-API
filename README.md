@@ -54,14 +54,14 @@ Enctype: `multipart/form-data` ,  and add the following:
 
 #### Using Mustache
 Html:
-```javascript
+```Html
 <p>{{title}}</p>
 <p>{{paragraph}}</p>
 <a href="{{link}}">link</a>
 ```
 
 View:
-```javascript
+```Json
 {
     "title": "عنوان عربي",
     "paragraph": "نص عربي طويل",
@@ -73,7 +73,7 @@ View:
 custom font file has to be converted to Base64 and added to the html template.
 
 Html:
-```javascript
+```Html
 <body>
   <style>
     body {
@@ -95,13 +95,52 @@ Html:
 ```
 
 View:
-```javascript
+```Json
 {
     "title": "عنوان عربي",
     "paragraph": "نص عربي طويل",
     "link": "https://github.com/"
 }
 ```
+
+#### With CSS Colors
+Make sure to add `-webkit-print-color-adjust: exact;` to the css block
+
+Html:
+```Html
+<style>
+  body {
+    -webkit-print-color-adjust: exact;
+  }
+
+  #myDiv {
+    display: grid;
+    gap: 10px;
+    background-color: #2196F3;
+    padding: 10px;
+    grid-template: 100px / auto auto auto;
+  }
+
+  #myDiv div {
+    background-color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    padding: 20px 0;
+    font-size: 30px;
+  }
+</style>
+
+<body>
+  <h1>Title</h1>
+
+  <div id="myDiv">
+    <div>Text 1</div>
+    <div>Text 2</div>
+    <div>Text 3</div>
+  </div>
+</body>
+```
+
+
 
 
 ## License
