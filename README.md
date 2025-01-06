@@ -34,7 +34,8 @@ A Microservice REST API that uses MustacheJs for processing Html template and ge
 Enctype: `multipart/form-data` , and add the following:
 | Part Type | Required | Type     | Description                |
 | :-------- | :------- | :------- | :------------------------- |
-| `html` | required | string | will be the content for the generated PDF. Can contain Mustache braces. |
+| `html` | required, if no file was provided | string | will be the content for the generated PDF. Can contain Mustache braces. |
+| `file` | required, if no html was provided | file | will be the content for the generated PDF. Can contain Mustache braces. |
 | `view` | optional | json  | Mustache object. |
 | `fileName` | optional | string  | will be the name of the generated file. Has to have a file extension. |
 
@@ -46,7 +47,8 @@ Enctype: `multipart/form-data` , and add the following:
 Enctype: `multipart/form-data` ,  and add the following:
 | Part Type | Required | Type     | Description                |
 | :-------- | :------- | :------- | :------------------------- |
-| `html` | required | string | will be the content for the generated PDF. Can contain Mustache braces. |
+| `html` | required, if no file was provided | string | will be the content for the generated PDF. Can contain Mustache braces. |
+| `file` | required, if no html was provided | file | will be the content for the generated PDF. Can contain Mustache braces. |
 | `view` | optional | json  | Mustache object. |
 
 
