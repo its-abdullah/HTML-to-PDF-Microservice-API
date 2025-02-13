@@ -1,5 +1,6 @@
 const express = require('express');
 const multer = require('multer');
+const fs = require('node:fs');
 
 const { isHtml, isJson } = require('../services/helperService');
 const { Html2Pdf } = require('../services/puppeteerService');
@@ -8,13 +9,17 @@ const { renderMustache } = require('../services/mustacheService');
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
-router.post('/AsFile/', upload.single('html'), async (req, res) => {
+router.post('/AsFile/', upload.single('file'), async (req, res) => {  
   let { html } = req.body;
+  let file = req.file;
+
+  if (html === undefined && file === undefined)
+    return res.status(400).send({
+      message: 'HTML or file is required.'
+    });
 
   if (html === undefined)
-    return res.status(400).send({
-      message: 'HTML is required.'
-    });
+    html = fs.readFileSync(file.path, 'utf8');
 
   if (!isHtml(html))
     return res.status(400).send({
@@ -50,11 +55,15 @@ router.post('/AsFile/', upload.single('html'), async (req, res) => {
 
 router.post('/AsBase64/', upload.single('html'), async (req, res) => {
   let { html } = req.body;
+  let file = req.file;
+
+  if (html === undefined && file === undefined)
+    return res.status(400).send({
+      message: 'HTML or file is required.'
+    });
 
   if (html === undefined)
-    return res.status(400).send({
-      message: 'HTML is required.'
-    });
+    html = fs.readFileSync(file.path, 'utf8');
 
   if (!isHtml(html))
     return res.status(400).send({
