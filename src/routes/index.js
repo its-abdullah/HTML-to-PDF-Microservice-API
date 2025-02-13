@@ -11,7 +11,7 @@ const upload = multer({ dest: 'uploads/' });
 
 router.post('/AsFile/', upload.single('file'), async (req, res) => {  
   let { html } = req.body;
-  let file = req.file;
+  const { file } = req;
 
   if (html === undefined && file === undefined)
     return res.status(400).send({
@@ -55,7 +55,7 @@ router.post('/AsFile/', upload.single('file'), async (req, res) => {
 
 router.post('/AsBase64/', upload.single('html'), async (req, res) => {
   let { html } = req.body;
-  let file = req.file;
+  const { file } = req;
 
   if (html === undefined && file === undefined)
     return res.status(400).send({
