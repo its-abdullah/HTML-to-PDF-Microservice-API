@@ -12,6 +12,7 @@ A Microservice REST API that uses MustacheJs for processing Html template and ge
 * [Puppeteer](https://github.com/puppeteer/puppeteer/) Generating PDF from HTML.
 * [chromium](https://www.chromium.org) To make a Chromium instance for Puppeteer only when Docker-ed.
 * [SuperTest](https://github.com/ladjs/supertest) For Unit-Test.
+* [ESLint](https://eslint.org/) To enforce code quality standards.
 
 
 ## Deployment
@@ -24,32 +25,19 @@ A Microservice REST API that uses MustacheJs for processing Html template and ge
 `docker run -p 3000:3000 html2pdf`
 
 
-## API Endpoints
-
-#### As File
-
+## API Endpoint
 ```http
-  POST /AsFile/
+  POST /html2pdf/
 ```
 Enctype: `multipart/form-data` , and add the following:
 | Part Type | Required | Type     | Description                |
 | :-------- | :------- | :------- | :------------------------- |
 | `html` | required, if no file was provided | string | will be the content for the generated PDF. Can contain Mustache braces. |
 | `file` | required, if no html was provided | file | will be the content for the generated PDF. Can contain Mustache braces. |
-| `view` | optional | json  | Mustache object. |
-| `fileName` | optional | string  | will be the name of the generated file. Has to have a file extension. |
-
-#### As Base64
-
-```http
-  POST /AsBase64/
-```
-Enctype: `multipart/form-data` ,  and add the following:
-| Part Type | Required | Type     | Description                |
-| :-------- | :------- | :------- | :------------------------- |
-| `html` | required, if no file was provided | string | will be the content for the generated PDF. Can contain Mustache braces. |
-| `file` | required, if no html was provided | file | will be the content for the generated PDF. Can contain Mustache braces. |
-| `view` | optional | json  | Mustache object. |
+| `asBase46` | Default: false | string | determine the response format. will be as a file if set to false. |
+| `view` | optional | json | Mustache object. |
+| `fileName` | Default: document.pdf | string | will be the name of the generated file. Has to have a file extension. |
+| `paperSize` | Default: A4 | string | paper size. [Check accepted options.](https://pptr.dev/api/puppeteer.paperformat) |
 
 
 ## Html Examples

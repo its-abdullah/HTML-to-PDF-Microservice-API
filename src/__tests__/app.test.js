@@ -1,4 +1,6 @@
 const request = require('supertest');
+const fs = require('fs');
+const path = require('path');
 const app = require('../app');
 
 describe('app', () => {
@@ -6,82 +8,94 @@ describe('app', () => {
     expect(app).toBeTruthy();
   });
 
-  describe('POST /AsFile', () => {
-    it('should respond to the post method with 400, missing Html', async () => {
+  const goodHtmlFilePath = path.join(__dirname, 'files', 'good-html.html');
+  const badHtmlFilePath = path.join(__dirname, 'files', 'bad-html.html');
+  
+  expect(fs.existsSync(goodHtmlFilePath)).toBe(true);
+  expect(fs.existsSync(badHtmlFilePath)).toBe(true);
+
+  describe('POST /html2pdf', () => {
+    it('Passing no HTML, expected response status is 400', async () => {
       const response =
         await request(app)
-          .post('/AsFile')
+          .post('/html2pdf');
       expect(response.statusCode).toBe(400);
     });
 
-    it('should respond to the post method with 200, good Html', async () => {
+    it('Passing HTML, expected response status is 200', async () => {
       const response =
         await request(app)
-          .post('/AsFile')
-          .field("html", "welp");
+          .post('/html2pdf')
+          .field("html", "<!DOCTYPE html><html><head></head><body><h1>Hello, World!</h1></body></html>");
       expect(response.statusCode).toBe(200);
     });
 
-    it('should respond to the post method with 400, bad Json view', async () => {
+    it('Passing invalid HTML file, expected response status is 400', async () => {
       const response =
         await request(app)
-          .post('/AsFile')
-          .field("html", "welp")
+          .post('/html2pdf')
+          .attach('file', badHtmlFilePath);
+      expect(response.statusCode).toBe(400);
+    });
+
+    it('requesting it asBase64, expected response status is 200', async () => {
+      const response =
+        await request(app)
+          .post('/html2pdf')
+          .attach('file', goodHtmlFilePath)
+          .field("asBase64", true);
+      expect(response.statusCode).toBe(200);
+    });
+
+    it('Passing invalid HTML file, expected response status is 400', async () => {
+      const response =
+        await request(app)
+          .post('/html2pdf')
+          .attach('file', badHtmlFilePath);
+      expect(response.statusCode).toBe(400);
+    });
+
+    it('Passing valid HTML file, expected response status is 200', async () => {
+      const response =
+        await request(app)
+          .post('/html2pdf')
+          .attach('file', goodHtmlFilePath);
+      expect(response.statusCode).toBe(200);
+    });
+
+    it('Passing invalid json, expected response status is 400', async () => {
+      const response =
+        await request(app)
+          .post('/html2pdf')
+          .attach('file', goodHtmlFilePath)
           .field("view", 'badJson { "name": "nothing" }');
       expect(response.statusCode).toBe(400);
     });
 
-    it('should respond to the post method with 200, good Html and Json view', async () => {
+    it('Passing valid json, expected response status is 200', async () => {
       const response =
         await request(app)
-          .post('/AsFile')
-          .field("html", "welp")
-          .field("view", '{ "name": "nothing" }');
+          .post('/html2pdf')
+          .attach('file', goodHtmlFilePath)
+          .field("view", '{ "name": "abdullah" }');
       expect(response.statusCode).toBe(200);
     });
 
-    it('should respond to the post method with 200, good Html and Json view and FileName', async () => {
+    it('Passing invalid paper size, expected response status is 400', async () => {
       const response =
         await request(app)
-          .post('/AsFile')
-          .field("html", "welp")
-          .field("view", '{ "name": "nothing" }')
-          .field("fileName", 'file.pdf');
-      expect(response.statusCode).toBe(200);
-    });
-  });
-
-  describe('POST /AsBase64', () => {
-    it('should respond to the post method with 400, missing html', async () => {
-      const response =
-        await request(app)
-          .post('/AsBase64')
+          .post('/html2pdf')
+          .attach('file', goodHtmlFilePath)
+          .field("paperSize", 'NotA4');
       expect(response.statusCode).toBe(400);
     });
 
-    it('should respond to the post method with 200, good html', async () => {
+    it('Passing valid paper size, expected response status is 200', async () => {
       const response =
         await request(app)
-          .post('/AsBase64')
-          .field("html", "welp");
-      expect(response.statusCode).toBe(200);
-    });
-
-    it('should respond to the post method with 400, bad json view', async () => {
-      const response =
-        await request(app)
-          .post('/AsBase64')
-          .field("html", "welp")
-          .field("view", 'badJson { "name": "nothing" }');
-      expect(response.statusCode).toBe(400);
-    });
-
-    it('should respond to the post method with 200, good html and view', async () => {
-      const response =
-        await request(app)
-          .post('/AsBase64')
-          .field("html", "welp")
-          .field("view", '{ "name": "nothing" }');
+          .post('/html2pdf')
+          .attach('file', goodHtmlFilePath)
+          .field("paperSize", 'A4');
       expect(response.statusCode).toBe(200);
     });
   });
