@@ -27,10 +27,13 @@ router.post('/AsFile/', upload.single('file'), async (req, res) => {
     });
 
   const { view } = req.body;
-  let { fileName } = req.body;
+  let { fileName, paperSize } = req.body;
 
   if (fileName === undefined)
     fileName = 'document.pdf';
+
+  if (paperSize === undefined)
+    paperSize = 'A4';
 
   if (view !== undefined) {
     if (!isJson(view))
@@ -46,7 +49,7 @@ router.post('/AsFile/', upload.single('file'), async (req, res) => {
     'Content-Disposition': `attachment; filename="${fileName}"`
   });
 
-  const download = Buffer.from(await Html2Pdf(html), 'base64');
+  const download = Buffer.from(await Html2Pdf(html, paperSize), 'base64');
 
   res.end(download);
 
@@ -70,7 +73,10 @@ router.post('/AsBase64/', upload.single('html'), async (req, res) => {
       message: 'Not a valid HTML.'
     });
 
-  const { view } = req.body;
+  const { view, paperSize } = req.body;
+
+  if (paperSize === undefined)
+    paperSize = 'A4';
 
   if (view !== undefined) {
     if (!isJson(view))
@@ -81,7 +87,7 @@ router.post('/AsBase64/', upload.single('html'), async (req, res) => {
       html = renderMustache(html, view);
   }
 
-  res.json({ base64: (await Html2Pdf(html)).toString('base64') });
+  res.json({ base64: (await Html2Pdf(html, paperSize)).toString('base64') });
 
   return undefined;
 });

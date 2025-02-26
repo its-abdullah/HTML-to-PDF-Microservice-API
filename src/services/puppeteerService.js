@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer');
 
-const Html2Pdf = async (html) => {
+const Html2Pdf = async (html, paperSize) => {
   // setting chromium path, needed only on Docker
   const chromiumPath =
   process.env.NODE_ENV === 'development' ||
@@ -25,7 +25,7 @@ const Html2Pdf = async (html) => {
 
   // create a pdf buffer
   const pdfBuffer = await page.pdf({
-    format: 'A4'
+    format: paperSize
   });
 
   await browser.close();
